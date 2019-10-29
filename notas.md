@@ -5,6 +5,7 @@ Sobre as temáticas:
 - cultura e lazer;
 - mobilidade urbana;
 - participação política;
+     Onde achar população do Recife por ano?
 - religião.
 
 Sobre fontes de dados:
@@ -13,3 +14,4 @@ Sobre fontes de dados:
 
 -PNAD não trabalha com nível municipal, o menor é Região Metropolitana.
   -PNAD Contínua Trimestral sim.
+  

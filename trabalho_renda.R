@@ -147,3 +147,25 @@ print(g2_rec)
 #--------- Rendimento por raça -------- #
 
 #Rendimento (Bairros/Recife) ~ Censo IBGE
+#instalar e carregar pacotes para alterar estrutura do banco
+install.packages(c("tidyr", "devtools"))
+library(tidyr, devtools)
+
+#carregar banco
+rend.bairros = read.csv("trabalho_renda/rend_agp_bairros_CENSO.csv", sep=";", dec=",")
+#excluir ultima linha
+rend.bairros = slice(rend.bairros, 1:99)
+#Alterar  tipo dado
+rend.bairros$local = as.character(rend.bairros$local)
+
+#tidy para "key-value" #GENIAL
+renda_bairros = gather(rend.bairros, Renda, Valor, Até.1.SM:Sem.rendimento)
+
+#Limpar nome dos grupos de SM
+renda_bairros$Renda = str_replace_all(renda_bairros$Renda,"\\.", " ")
+
+#------ graficos ------#
+#g3. Distribuição de renda por bairro
+
+
+

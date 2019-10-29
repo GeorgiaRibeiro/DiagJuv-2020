@@ -1,0 +1,25 @@
+local;fx_etaria;genero;Total;Até 1 SM;Mais de 1 a 2 salários mínimos;Mais de 2 a 5 SM;Mais de 5 a 10 salários mínimos;Mais de 10 SM;Sem rendimento
+Brasil;Total;Total;100;27,46;18,88;11,31;3,6;1,66;37,09
+Brasil;Total;Homens;48,62;12,31;10,73;7,21;2,25;2,82;14,97
+Brasil;Total;Mulheres;51,38;15,15;8,15;4,1;1,34;1,66;22,13
+Brasil;15 a 17 anos;Total;6,39;0,91;0,18;0,01;0;0,5;5,28
+Brasil;16 a 17 anos;Homens;3,22;0,51;0,12;0,01;0;0;2,58
+Brasil;17 a 17 anos;Mulheres;3,17;0,41;0,06;0;0;0;2,7
+Brasil;18 ou 19 anos;Total;4,09;0,99;0,58;0,06;0;0;2,45
+Brasil;19 ou 19 anos;Homens;2,06;0,54;0,36;0,04;0;0;1,11
+Brasil;20 ou 19 anos;Mulheres;2,04;0,46;0,22;0,01;0;0;1,34
+Brasil;20 a 24 anos;Total;10,65;3,03;2,57;0,73;0,08;0,01;4,23
+Brasil;21 a 24 anos;Homens;5,33;1,53;1,55;0,49;0,05;0,01;1,71
+Brasil;22 a 24 anos;Mulheres;5,32;1,51;1,03;0,24;0,03;0;2,51
+Recife;Total;Total;100;28,83;14,1;9,98;5,32;3,59;38,18
+Recife;Total;Homens;45,45;12,07;7,82;5,2;2,79;5,89;15,27
+Recife;Total;Mulheres;54,55;16,76;6,28;4,79;2,53;3,59;22,91
+Recife;15 a 17 anos;Total;5,64;0,53;0,04;0,01;0;1,29;5,07
+Recife;16 a 17 anos;Homens;2,83;0,29;0,02;0;0;0;2,51
+Recife;17 a 17 anos;Mulheres;2,81;0,24;0,01;0;0;0;2,55
+Recife;18 ou 19 anos;Total;3,76;0,81;0,19;0,03;0;0;2,72
+Recife;19 ou 19 anos;Homens;1,86;0,43;0,12;0,02;0;0;1,29
+Recife;20 ou 19 anos;Mulheres;1,9;0,38;0,08;0,02;0;0;1,43
+Recife;20 a 24 anos;Total;10,47;3,35;1,55;0,51;0,09;0,02;4,95
+Recife;21 a 24 anos;Homens;5,06;1,68;0,88;0,3;0,06;0,03;2,13
+Recife;22 a 24 anos;Mulheres;5,42;1,68;0,66;0,21;0,03;0,01;2,82

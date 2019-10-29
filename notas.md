@@ -5,7 +5,7 @@ Sobre as temáticas:
 - cultura e lazer;
 - mobilidade urbana;
 - participação política;
-     Onde achar população do Recife por ano?
+     Onde achar população do Recife por ano? CENSO 2000 E 2010
 - religião.
 
 Sobre fontes de dados:

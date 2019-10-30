@@ -9,6 +9,7 @@
 library(tidyverse) #Análise de dados
 library(ggplot2) #Visualização gráficos
 library(plotly) #Visualização graficos interativa
+library(htmlwidgets) #salvar html
 library(tidyr, devtools) #estrutura do banco
 library(maptools) #visualização com mapas
 library(ggmap)
@@ -16,20 +17,7 @@ library(rgdal)
 library(xlsx) #exportar df para excel NÃO CONSEGUI INSTALAR
 library(dplyr)
 
-#importar pacotes
-source("Dados gerais/ferramentas.R")
-
-# layout ggplot (PROVISÓRIO)
-tema_massa <- function (base_size = 12, base_family = "") {
-  theme_minimal(base_size = base_size, base_family = base_family) %+replace% 
-    theme(axis.text.x = element_text(colour="black", size=11,hjust=.5,vjust=.5,face="plain"),
-          axis.text.y = element_text(colour="black", size=11,angle=0,hjust=1,vjust=0,face="plain"), 
-          axis.title.x = element_text(colour="black",size=11,angle=0,hjust=.5,vjust=0,face="plain"),
-          axis.title.y = element_text(colour="black",size=11,angle=90,hjust=0.5,vjust=0.6,face="plain"),
-          title = element_text(colour="black",size=14,angle=0,hjust=.5,vjust=.5,face="plain"))
-}
-
-#= = = Rendimento (Brasil e Recife) ~ PNADc trimestral
+#PNADc TRIMESTRAL
 rend = read.csv("trabalho_renda/rend_idade_PNADc.csv", sep = ";")
 str(rend)
 rend$Idade = as.character(rend$Idade)
@@ -48,25 +36,38 @@ renda_ano$Group.1 = NULL
 #------ graficos ------#
 #g1. Renda por ano Brasil(g1_br) e Recife(g1_rec)
 g1_br = ggplot(renda_ano, aes(x=ano, y=Brasil, group = 1)) +
+  geom_line()+
+  geom_point()+
     labs(x="Ano",
        y="Rendimento (R$)",
-       title = "Rendimento por ano - Brasil",
+       title = "Rendimento médio da população total por ano - Brasil",
        subtitle = "Dados: PNAD contínua trimestral",
        caption = "Fonte: Elaboração própria") +
   temamassa()
+#salvar
+g1_br + ggsave("rend_total_ano_br.png",
+       path = "trabalho_renda/graficos e mapas",
+       width = 7, height = 4, units = "in")
 
-g1_br = ggplotly(g1_br)
+#p1_br = ggplotly(g1_br)
+#saveWidget(p1_br, file="rend_total_ano_br.html",
+           #selfcontained = F, libdir = "trabalho_renda/graficos e mapas")
 
 g1_rec = ggplot(renda_ano, aes(x=ano, y=Recife, group = 1)) +
+  geom_line()+
+  geom_point()+
   labs(x="Ano",
        y="Rendimento (R$)",
-       title = "Rendimento por ano - Recife",
+       title = "Rendimento médio da população total por ano - Recife",
        subtitle = "Dados: PNAD contínua trimestral",
        caption = "Fonte: Elaboração própria") +
   temamassa()
+#salvar
+g1_rec + ggsave("rend_total_ano_rec.png",
+               path = "trabalho_renda/graficos e mapas",
+               width = 7, height = 4, units = "in")
 
-g1_rec = ggplotly(g1_rec)
-print(g1_rec)
+p1_rec = ggplotly(g1_rec)
 
 #--------- Rendimento por faixa etária -------- #
 rend.etaria = rend %>%
@@ -94,14 +95,12 @@ R13 = rend.etaria %>%
   summarise_all(list(mean))
 R13 = mutate(R13, ano = "2013")
 
-
 R14 = rend.etaria %>%
   filter(ano == "2014") %>%
   select(Brasil, Recife, Idade) %>%
   group_by(Idade) %>%
   summarise_all(list(mean))
 R14 = mutate(R14, ano = "2014")
-
 
 R15 = rend.etaria %>%
   filter(ano == "2015") %>%
@@ -110,14 +109,12 @@ R15 = rend.etaria %>%
   summarise_all(list(mean))
 R15 = mutate(R15, ano = "2015")
 
-
 R16 = rend.etaria %>%
   filter(ano == "2016") %>%
   select(Brasil, Recife, Idade) %>%
   group_by(Idade) %>%
   summarise_all(list(mean))
 R16 = mutate(R16, ano = "2016")
-
 
 R17 = rend.etaria %>%
   filter(ano == "2017") %>%
@@ -130,8 +127,9 @@ renda_etaria = rbind(R12, R13, R14, R15, R16, R17)
 
 #------ graficos ------#
 #g2. Renda por faixa etária Brasil(g2_br) e Recife(g2_rec)
-
 g2_br = ggplot(renda_etaria, aes(x=ano, y=Brasil, group=Idade, colour=Idade)) +
+  geom_line()+
+  geom_point()+
   labs(x="Ano",
        y="Rendimento (R$)",
        fill= "Faixa etária",
@@ -139,24 +137,135 @@ g2_br = ggplot(renda_etaria, aes(x=ano, y=Brasil, group=Idade, colour=Idade)) +
        subtitle = "Dados: PNAD contínua trimestral",
        caption = "Fonte: Elaboração própria") +
   temamassa()
+#salvar
+g2_br + ggsave("rend_idade_br.png",
+               path = "trabalho_renda/graficos e mapas",
+               width = 7, height = 4, units = "in")
 
-g12_br = ggplotly(g2_br)
+p2_br = ggplotly(g2_br)
 
 g2_rec = ggplot(renda_etaria, aes(x=ano, y=Recife, group=Idade, colour=Idade)) +
+  geom_line()+
+  geom_point()+
   labs(x="Ano",
        y="Rendimento (R$)",
        fill= "Faixa etária",
        title = "Rendimento por faixa etária - Recife",
        subtitle = "Dados: PNAD contínua trimestral",
        caption = "Fonte: Elaboração própria") +
-  temamassa()
+  tema_massa()
+g2_rec + ggsave("rend_idade_rec.png",
+               path = "trabalho_renda/graficos e mapas",
+               width = 7, height = 4, units = "in")
 
-g2_rec = ggplotly(g2_rec)
-print(g2_rec)
+p2_rec = ggplotly(g2_rec)
+
+#CENSO DEMOG.
+#carregar banco
+rend.recife = read.csv("trabalho_renda/rend_idade_genero_CENSO.csv", sep = ";", dec = ",")
+str(rend.gen)
+
+#Transformar tipo do banco
+rend.recife = gather(rend.recife, renda, valor, Até.1.SM:Sem.rendimento)
+
+#Renomear renda
+rend.recife$renda = str_replace_all(rend.recife$renda,"\\.", " ")
 
 #--------- Rendimento por gênero -------- #
+#agrupar juventude por genero
+rend.recife1 = rend.recife %>%
+  filter(fx_etaria != "Total", local == "Recife", genero != "Total") %>%
+  select(genero, renda, valor) %>%
+  group_by(genero, renda) %>%
+  summarise_at(vars(valor), sum)
 
-#--------- Rendimento por raça -------- #
+#calcular percentual de jovens
+b = rend.recife %>%
+  filter(fx_etaria != "Total", local == "Recife", genero == "Total") %>%
+  summarise(perc_jovem =sum(valor))
+
+#percentual dos jovens
+rend.recife1$percentual =  as.numeric(format(((rend.recife1$valor/b$perc_jovem)*100),
+                                             digits = 2, format = "f"))
+#------ graficos ------#
+g3_gen_v2 = ggplot(rend.recife1, aes(genero, percentual, fill = renda)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(x="Gênero",
+       y="% Jovens",
+       fill= "Classe de rendimento",
+       title = "Rendimento por gênero - Recife",
+       subtitle = "Dados: Censo 2010/IBGE",
+       caption = "Fonte: Elaboração própria") +
+  tema_massa()
+g3_gen_v2 + ggsave("rend_genero_censo2.png",
+                path = "trabalho_renda/graficos e mapas",
+                width = 7, height = 4, units = "in")
+
+p3_gen = ggplotly(g3_gen)
+#--------- Rendimento por faixa etária -------- #
+rend.recife2 = rend.recife %>%
+  filter(genero == "Total", local == "Recife", fx_etaria != "Total")
+
+#------ graficos ------#
+g4_idade = ggplot(rend.recife2, aes(fx_etaria, valor, fill = renda)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(x="Faixa etária",
+       y="% Jovens",
+       fill= "Classe de rendimento",
+       title = "Rendimento por faixa etária - Recife",
+       subtitle = "Dados: Censo 2010/IBGE",
+       caption = "Fonte: Elaboração própria") +
+  tema_massa()
+g4_idade + ggsave("rend_idade_censo.png",
+                path = "trabalho_renda/graficos e mapas",
+                width = 7, height = 4, units = "in")
+
+p4_idade = ggplotly(g4_idade)
+
+#--------- Rendimento por  raça/cor -------- #
+#carregar banco
+rend.raca = read.csv("trabalho_renda/rend_raca-cor_CENSO.csv",
+                     sep = ";", dec = ",")
+str(rend.raca)
+
+#alterar tipo das variaveis
+rend.raca$local = as.character(rend.raca$local)
+rend.raca$fx_etaria = as.character(rend.raca$fx_etaria)
+rend.raca$renda = as.character(rend.raca$renda)
+
+#Transformar tipo do banco
+rend.raca = gather(rend.raca, raca, pop, 4:8)
+
+#calcular total de jovens
+a = rend.raca %>%
+  filter(fx_etaria != "Total") %>%
+  summarise(pop_jovem =sum(pop))
+
+#agrupar juventude
+rend.raca2 = rend.raca %>%
+  filter(fx_etaria != "Total", renda != "Total") %>%
+  select(raca, renda, pop) %>%
+  group_by(raca, renda) %>%
+  summarise_at(vars(pop), sum)
+
+#calcular percentual
+rend.raca2$percentual = as.numeric(format(((rend.raca2$pop / a$pop_jovem)*100),
+                  digits = 2, format = "f"))
+
+#------ graficos ------#
+g5_raca = ggplot(rend.raca2, aes(raca, percentual, fill = renda)) +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(x="Raça/Cor",
+       y="% Jovens",
+       fill= "Classe de rendimento",
+       title = "Rendimento por raça/cor - Recife",
+       subtitle = "Dados: Censo 2010/IBGE",
+       caption = "Fonte: Elaboração própria") +
+  tema_massa()
+g5_raca + ggsave("rend_raca-cor_censo.png",
+                path = "trabalho_renda/graficos e mapas",
+                width = 7, height = 4, units = "in")
+
 
 #------ tabelas ------#
 
@@ -230,68 +339,3 @@ source("Dados gerais/visualizacao_espacial.R")
 shp_recife = shapefile("Dados gerais/Bairros.shp")
 
 mapa.funcao(shp_recife, rendmed.bairros, rendmed.bairros$Total, '', 'R$')
-
-#======== Tema ggplot2 para graficos ========#
-temamassa <- function (base_size = 12, base_family = "") {
-  theme_minimal(base_size =  base_size, base_family = base_family) %+replace% 
-    theme(axis.text.x = element_text(colour= "black",size=11,hjust=.5,vjust=.5,face="plain"),
-          axis.text.y = element_text(colour="black",size=11,angle=0,hjust=1,vjust=0,face="plain"), 
-          axis.title.x = element_text(colour="black",size=12,angle=0,hjust=.5,vjust=0,face="plain"),
-          axis.title.y = element_text(colour="black",size=12,angle=90,hjust=0.5,vjust=0.6,face="plain"),
-          title = element_text(colour="black",size=14,angle=0,hjust=.5,vjust=.5,face="bold"),
-          panel.grid.major = element_line(colour = grey(0.85)), 
-          panel.grid.minor = element_line(colour = grey(1)),
-          legend.key.size = unit(9, "mm"),
-          legend.text = element_text(size = 9, hjust = 3, vjust = 3),
-          legend.title = element_text(size = 9),
-          axis.line = element_line(size = 1, colour = "grey70"))
-  
-  #============== Remover acentos ==============#
-  
-  rm_accent <- function(str,pattern="all") {
-    # Rotinas e funções úteis V 1.0
-    # rm.accent - REMOVE ACENTOS DE PALAVRAS
-    # Função que tira todos os acentos e pontuações de um vetor de strings.
-    # Parâmetros:
-    # str - vetor de strings que terão seus acentos retirados.
-    # patterns - vetor de strings com um ou mais elementos indicando quais acentos deverão ser retirados.
-    #            Para indicar quais acentos deverão ser retirados, um vetor com os símbolos deverão ser passados.
-    #            Exemplo: pattern = c("´", "^") retirará os acentos agudos e circunflexos apenas.
-    #            Outras palavras aceitas: "all" (retira todos os acentos, que são "´", "`", "^", "~", "¨", "ç")
-    if(!is.character(str))
-      str <- as.character(str)
-    
-    pattern <- unique(pattern)
-    
-    if(any(pattern=="Ç"))
-      pattern[pattern=="Ç"] <- "ç"
-    
-    symbols <- c(
-      acute = "áéíóúÁÉÍÓÚýÝ",
-      grave = "àèìòùÀÈÌÒÙ",
-      circunflex = "âêîôûÂÊÎÔÛ",
-      tilde = "ãõÃÕñÑ",
-      umlaut = "äëïöüÄËÏÖÜÿ",
-      cedil = "çÇ"
-    )
-    
-    nudeSymbols <- c(
-      acute = "aeiouAEIOUyY",
-      grave = "aeiouAEIOU",
-      circunflex = "aeiouAEIOU",
-      tilde = "aoAOnN",
-      umlaut = "aeiouAEIOUy",
-      cedil = "cC"
-    )
-    
-    accentTypes <- c("´","`","^","~","¨","ç")
-    
-    if(any(c("all","al","a","todos","t","to","tod","todo")%in%pattern)) # opcao retirar todos
-      return(chartr(paste(symbols, collapse=""), paste(nudeSymbols, collapse=""), str))
-    
-    for(i in which(accentTypes%in%pattern))
-      str <- chartr(symbols[i],nudeSymbols[i], str)
-    
-    return(str)
-  }
-  

@@ -1,0 +1,9 @@
+;;;Total;;;;;;15 a 19 anos;;;;;;20 a 24 anos;;;;;
+local;genero;condicao;Total;Sem instrução e fundamental incompleto;Fundamental completo e médio incompleto;Médio completo e superior incompleto;Superior completo;Não determinado;Total;Sem instrução e fundamental incompleto;Fundamental completo e médio incompleto;Médio completo e superior incompleto;Superior completo;Não determinado;Total;Sem instrução e fundamental incompleto;Fundamental completo e médio incompleto;Médio completo e superior incompleto;Superior completo;Não determinado
+Brasil;Total;Pessoa responsável;29.35;14.91;4.55;6.88;2.92;0.08;0.32;0.12;0.13;0.06;0;0.01;1.41;0.45;0.38;0.53;0.05;0.01
+Brasil;Homens;Pessoa responsável;18.41;9.39;2.87;4.34;1.77;0.04;0.14;0.06;0.05;0.03;0;0;0.85;0.3;0.23;0.3;0.02;0
+Brasil;Mulheres;Pessoa responsável;10.93;5.52;1.69;2.54;1.15;0.03;0.18;0.07;0.07;0.04;0;0;0.56;0.16;0.15;0.23;0.03;0
+Recife;Total;Pessoa responsável;30.25;11.48;4.48;8.76;5.47;0.07;0.31;0.12;0.11;0.08;-;0;1.22;0.31;0.29;0.54;0.06;0.01
+Recife;Homens;Pessoa responsável;16.31;5.43;2.44;5.17;3.23;0.03;0.14;0.05;0.05;0.04;-;-;0.69;0.19;0.17;0.29;0.04;0
+Recife;Mulheres;Pessoa responsável;13.95;6.04;2.04;3.6;2.23;0.04;0.17;0.07;0.06;0.04;-;0;0.53;0.13;0.12;0.25;0.03;0
+Fonte: IBGE - Censo Demográfico;;;;;;;;;;;;;;;;;;;;

@@ -78,7 +78,7 @@ g2 + ggsave("resp_tipo-dom.png",
 
 # ----- Condição na família -----#
 cond = read.csv("familia_habitacao/resp_familiar_instrucao.csv",
-                sep = ";", stringsAsFactors=FALSE, dec = ",")
+                sep = ";", dec = ".")
 
 #Renomear variaveis
 colnames(cond) = c('local','genero','condicao','tot_total',
@@ -94,7 +94,9 @@ cond = cond[-c(1, 8), ]
 str(cond)
 
 #definir tipos das variaveis
-
+v = cond[1:3]
+cond = cond %>%
+  mutate_if(is.factor, as.numeric(format(digits = 2, format = "f", cond[4:21])))
 
 #criar fx etária jovem
 cond$juv_total = colSums(cond[c(4,10,16)])

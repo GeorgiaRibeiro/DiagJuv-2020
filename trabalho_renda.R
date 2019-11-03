@@ -38,11 +38,12 @@ renda_ano$Group.1 = NULL
 g1_br = ggplot(renda_ano, aes(x=ano, y=Brasil, group = 1)) +
   geom_line()+
   geom_point()+
+  ylim(1400,2400) +
     labs(x="Ano",
        y="Rendimento (R$)",
-       title = "Rendimento médio da população total por ano - Brasil",
-       subtitle = "Dados: PNAD contínua trimestral",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: PNAD contínua trimestral") +
+  geom_text(aes(label = round(Brasil,0)),
+            position = position_dodge(0.9), vjust = -1, size = 3) +
   temamassa()
 #salvar
 g1_br + ggsave("rend_total_ano_br.png",
@@ -56,11 +57,12 @@ g1_br + ggsave("rend_total_ano_br.png",
 g1_rec = ggplot(renda_ano, aes(x=ano, y=Recife, group = 1)) +
   geom_line()+
   geom_point()+
+  ylim(2000,3000)+
   labs(x="Ano",
        y="Rendimento (R$)",
-       title = "Rendimento médio da população total por ano - Recife",
-       subtitle = "Dados: PNAD contínua trimestral",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: PNAD contínua trimestral") +
+  geom_text(aes(label = round(Recife,0)),
+            position = position_dodge(0.9), vjust = -1, size = 3)+
   temamassa()
 #salvar
 g1_rec + ggsave("rend_total_ano_rec.png",
@@ -130,13 +132,21 @@ renda_etaria = rbind(R12, R13, R14, R15, R16, R17)
 g2_br = ggplot(renda_etaria, aes(x=ano, y=Brasil, group=Idade, colour=Idade)) +
   geom_line()+
   geom_point()+
+  ylim(300,3000)+
   labs(x="Ano",
        y="Rendimento (R$)",
        fill= "Faixa etária",
-       title = "Rendimento por faixa etária - Brasil",
-       subtitle = "Dados: PNAD contínua trimestral",
-       caption = "Fonte: Elaboração própria") +
-  temamassa()
+       caption = "Elaboração própria | Dados: PNAD contínua trimestral") +
+  geom_text(data = renda_etaria[renda_etaria$Idade != "40 a 59 anos",], show.legend = FALSE,
+            aes(label = round(Brasil,0), colour = factor(Idade)),
+            hjust = 0.5, vjust = -1, size = 3)+
+  geom_text(data = renda_etaria[renda_etaria$Idade == "40 a 59 anos",], show.legend = FALSE,
+            aes(label = round(Brasil,0), colour = factor(Idade)),
+            hjust = 0.5, vjust = 2, size = 3)+
+  tema_massa()
+
+
+#position = position_dodge(0.9), hjust=0.25, vjust = -1
 #salvar
 g2_br + ggsave("rend_idade_br.png",
                path = "trabalho_renda/graficos e mapas",
@@ -147,12 +157,17 @@ p2_br = ggplotly(g2_br)
 g2_rec = ggplot(renda_etaria, aes(x=ano, y=Recife, group=Idade, colour=Idade)) +
   geom_line()+
   geom_point()+
+  ylim(300, 4900)+
   labs(x="Ano",
        y="Rendimento (R$)",
        fill= "Faixa etária",
-       title = "Rendimento por faixa etária - Recife",
-       subtitle = "Dados: PNAD contínua trimestral",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: PNAD contínua trimestral") +
+  geom_text(data = renda_etaria[renda_etaria$Idade != "40 a 59 anos",], show.legend = FALSE,
+            aes(label = round(Recife,0), colour = factor(Idade)),
+            hjust = 0.5, vjust = -1, size = 3)+
+  geom_text(data = renda_etaria[renda_etaria$Idade == "40 a 59 anos",], show.legend = FALSE,
+            aes(label = round(Recife,0), colour = factor(Idade)),
+            hjust = 0.5, vjust = 2, size = 3)+
   tema_massa()
 g2_rec + ggsave("rend_idade_rec.png",
                path = "trabalho_renda/graficos e mapas",
@@ -188,14 +203,15 @@ b = rend.recife %>%
 rend.recife1$percentual =  as.numeric(format(((rend.recife1$valor/b$perc_jovem)*100),
                                              digits = 2, format = "f"))
 #------ graficos ------#
-g3_gen_v2 = ggplot(rend.recife1, aes(genero, percentual, fill = renda)) +
+g3_gen_v2  = ggplot(rend.recife1, aes(genero, percentual, fill = renda)) +
   geom_bar(position = "dodge", stat = "identity") +
+  ylim(0,35)+
   labs(x="Gênero",
        y="% Jovens",
        fill= "Classe de rendimento",
-       title = "Rendimento por gênero - Recife",
-       subtitle = "Dados: Censo 2010/IBGE",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: Censo 2010/IBGE") +
+  geom_text(aes(label = round(percentual,0), colour = (factor(rend.recife1$renda))), show.legend = F,
+            position = position_dodge(0.9), vjust = -0.5, size = 3) +
   tema_massa()
 g3_gen_v2 + ggsave("rend_genero_censo2.png",
                 path = "trabalho_renda/graficos e mapas",
@@ -206,15 +222,18 @@ p3_gen = ggplotly(g3_gen)
 rend.recife2 = rend.recife %>%
   filter(genero == "Total", local == "Recife", fx_etaria != "Total")
 
+rend.recife2$percentual = as.numeric((rend.recife2$valor/rend.recife2$Total)*100)
+
 #------ graficos ------#
-g4_idade = ggplot(rend.recife2, aes(fx_etaria, valor, fill = renda)) +
+g4_idade = ggplot(rend.recife2, aes(x=fx_etaria, y=round(percentual,2), fill = renda)) +
   geom_bar(position = "dodge", stat = "identity") +
+  ylim(0,100)+
   labs(x="Faixa etária",
        y="% Jovens",
        fill= "Classe de rendimento",
-       title = "Rendimento por faixa etária - Recife",
-       subtitle = "Dados: Censo 2010/IBGE",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: Censo 2010/IBGE") +
+  geom_text(aes(label = round(percentual,0), colour = (factor(renda))), show.legend = F,
+            position = position_dodge(0.9), vjust = -0.5, size = 3)+
   tema_massa()
 g4_idade + ggsave("rend_idade_censo.png",
                 path = "trabalho_renda/graficos e mapas",
@@ -258,9 +277,9 @@ g5_raca = ggplot(rend.raca2, aes(raca, percentual, fill = renda)) +
   labs(x="Raça/Cor",
        y="% Jovens",
        fill= "Classe de rendimento",
-       title = "Rendimento por raça/cor - Recife",
-       subtitle = "Dados: Censo 2010/IBGE",
-       caption = "Fonte: Elaboração própria") +
+       caption = "Elaboração própria | Dados: Dados: Censo 2010/IBGE") +
+  geom_text(aes(label = round(percentual,0), colour = (factor(renda))), show.legend = F,
+            position = position_dodge(0.9), vjust = -0.5, size = 3.5)+
   tema_massa()
 g5_raca + ggsave("rend_raca-cor_censo.png",
                 path = "trabalho_renda/graficos e mapas",
@@ -309,8 +328,6 @@ renda_bairros$local = str_sub(renda_bairros$local, end = -12)
 renda_bairros$local = rm_accent(renda_bairros$local, pattern="all")
 renda_bairros$local = str_to_upper(renda_bairros$local)
 
-#exportar tabela em xlsx ?
-
 #= = = Rendimento médio por bairros/Recife ~ Censo IBGE
 #carregar banco
 rendmed.bairros = read.csv("trabalho_renda/rendmedio_bairros_cor_CENSO.csv",
@@ -331,11 +348,9 @@ rendmed.bairros$Local = rm_accent(rendmed.bairros$Local, pattern="all")
 rendmed.bairros$Local = str_to_upper(rendmed.bairros$Local)
 str(rendmed.bairros)
 
-#------ mapa ------#
-#importar pacotes
-source("Dados gerais/visualizacao_espacial.R")
+#renomear colunas
+colnames(rendmed.bairros) = c('Bairros', 'rm_total','rm_branca', 'rm_preta', 'rm_amarela',
+                              'rm_parda', 'rm_indigena')
 
-# carregar shapefile 
-shp_recife = shapefile("Dados gerais/Bairros.shp")
-
-mapa.funcao(shp_recife, rendmed.bairros, rendmed.bairros$Total, '', 'R$')
+#EXPORTAR DF PARA GERAR MAPA
+write.csv(rendmed.bairros, "bairros_renda.csv", row.names = FALSE)

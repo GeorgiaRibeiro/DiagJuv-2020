@@ -76,14 +76,20 @@ eleit_juv2$percentual = as.numeric(format(eleit_juv2$percentual,
 
 #------ graficos ------#
 #Faixa Etaria
-g_eleit_idade = ggplot(eleit_juv, aes(ano, percentual, group=fx_etaria, colour=fx_etaria)) +
+g_eleit_idade = ggplot(eleit_juv, aes(x=ano, percentual, group=fx_etaria, colour=fx_etaria)) +
   geom_line()+
   geom_point()+
+  ylim(0,10)+
   labs (x = "Ano*",
         y = "% Eleitores",
-        fill = "Faixa Etaria",
-        title = "Evolução do eleitores jovens - Recife",
         caption = "* Os valores correspondem ao mês de setembro") +
+  labs(colour = "Faixa etária")+
+  geom_text(data = eleit_juv[eleit_juv$fx_etaria != "16 anos",], show.legend = FALSE,
+            aes(label = round(percentual,0), colour = factor(fx_etaria)),
+            hjust = 0.5, vjust = -1, size = 3)+
+  geom_text(data = eleit_juv[eleit_juv$fx_etaria == "16 anos",], show.legend = FALSE,
+            aes(label = round(percentual,0), colour = factor(fx_etaria)),
+            hjust = 0.5, vjust = 2, size = 3)+
   tema_massa()
 #salvar
 g_eleit_idade + ggsave("eleit_idade.png",
@@ -91,19 +97,19 @@ g_eleit_idade + ggsave("eleit_idade.png",
                width = 7, height = 4, units = "in")
 
 #Genero
-g_eleit_gen = ggplot(eleit_juv2, aes(ano, percentual,
-                                     fill=genero)) +
+g_eleit_gen = ggplot(eleit_juv2, aes(ano, percentual, fill=genero)) +
   geom_bar(stat="identity", position = 'dodge')+
+  ylim(0,0.6)+
   labs (x = "Ano*",
         y = "% Eleitores",
         fill = "Genero",
-        title = "Evolução do eleitores jovens - Recife",
         caption = "* Os valores correspondem ao mês de setembro") +
+  geom_text(aes(label = percentual), hjust =0.5, vjust=-0.5,
+            position = position_dodge(0.9), size=3) +
   tema_massa()
+
 #salvar
 g_eleit_gen + ggsave("eleit_genero.png",
                        path = "participacao_politica/graficos e mapas",
                        width = 7, height = 4, units = "in")
 
-
-# ----- EVOLUÇÃO ELEITORADO RECIFE POP JOVEM - TRE/PE -----#

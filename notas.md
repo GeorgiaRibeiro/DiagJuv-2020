@@ -20,4 +20,6 @@ NOME DO BANCO / ORIGEM:
 (2) 
 resp_domicilio_por_tipo.csv / Tabela 1161 - Censo 2010, IBGE.
 resp_familiar_instrucao.csv / Tabela 3518 - Censo 2010, IBGE.
+(5)
+religiao / Tabela 2103 - censo 2010, IBGE.
 

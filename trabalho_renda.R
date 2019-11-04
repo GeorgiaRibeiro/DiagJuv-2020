@@ -16,6 +16,7 @@ library(ggmap)
 library(rgdal)
 library(xlsx) #exportar df para excel NÃO CONSEGUI INSTALAR
 library(dplyr)
+library(naniar)
 
 #PNADc TRIMESTRAL
 rend = read.csv("trabalho_renda/rend_idade_PNADc.csv", sep = ";")
@@ -329,28 +330,42 @@ renda_bairros$local = rm_accent(renda_bairros$local, pattern="all")
 renda_bairros$local = str_to_upper(renda_bairros$local)
 
 #= = = Rendimento médio por bairros/Recife ~ Censo IBGE
+#Rendimento da juventude  por sexo ------------------------------------------------------#
 #carregar banco
-rendmed.bairros = read.csv("trabalho_renda/rendmedio_bairros_cor_CENSO.csv",
-                           sep=";", dec=",")
+rmjuv.bairros = read.csv("trabalho_renda/rendmed_juv_bairros_CENSO.csv",
+                           sep=";", dec= ",", stringsAsFactors = F)
+#renomear colunas
+colnames(rmjuv.bairros) = c('local', 'tot_total','tot_15', 'tot_20',
+                              'masc_total','masc_15', 'masc_20',
+                              'fem_total','fem_15', 'fem_20')
 
-#Limpar observações irrelevantes [1. Fonte, 2. dados pro Brasil e Recife]
-#1.
-rendmed.bairros = slice(rendmed.bairros, 1:96)
-#2.
-rendmed.bairros = rendmed.bairros[-c(1,2),]
+#Limpar observações irrelevantes (primeira e ultima linha)
+rmjuv.bairros = rmjuv.bairros[-c(1,2),]
+rmjuv.bairros = rmjuv.bairros[-c(95),]
 
 #Alterar  tipo dado
-rendmed.bairros$Local = as.character(rendmed.bairros$Local)
+rmjuv.bairrosx = data.frame(rmjuv.bairros[,1],sapply(rmjuv.bairros[,2:10], function(x) str_replace(x, ',', '.')))
+rmjuv.bairrosy = data.frame(rmjuv.bairrosx[,1], sapply(rmjuv.bairrosx[,2:10], function(x) as.numeric(as.character(x))))
+
+rmjuv.bairros = rmjuv.bairrosy
+colnames(rmjuv.bairros)[1] = c('local')
+rmjuv.bairros$local = as.character(rmjuv.bairros$local)
 
 #Ajeitar nome dos bairros
-rendmed.bairros$Local = str_sub(rendmed.bairros$Local, end = -12)
-rendmed.bairros$Local = rm_accent(rendmed.bairros$Local, pattern="all")
-rendmed.bairros$Local = str_to_upper(rendmed.bairros$Local)
-str(rendmed.bairros)
+rmjuv.bairros$local = str_sub(rmjuv.bairros$local, end = -15)
+rmjuv.bairros$local = rm_accent(rmjuv.bairros$local, pattern="all")
+rmjuv.bairros$local = str_to_upper(rmjuv.bairros$local)
+str(rmjuv.bairros)
 
-#renomear colunas
-colnames(rendmed.bairros) = c('Bairros', 'rm_total','rm_branca', 'rm_preta', 'rm_amarela',
-                              'rm_parda', 'rm_indigena')
+#total da juventude por sex
+rmjuv.bairros$tot_juv = apply(rmjuv.bairros[,c(3,4)],1,sum)
+rmjuv.bairros$masc_juv = apply(rmjuv.bairros[,c(6,7)],1,sum)
+rmjuv.bairros$fem_juv = apply(rmjuv.bairros[,c(9,10)],1,sum)
+
+#excluir dados separados
+rmjuv.bairros[,c(3,4)] = NULL
+rmjuv.bairros[,c(4,5)] = NULL
+rmjuv.bairros[,c(5,6)] = NULL
 
 #EXPORTAR DF PARA GERAR MAPA
-write.csv(rendmed.bairros, "bairros_renda.csv", row.names = FALSE)
+write.csv(rmjuv.bairros, "renda_juv_bairros.csv", row.names = FALSE)
